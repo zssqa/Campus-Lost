@@ -1,0 +1,620 @@
+/* 自定义样式 */
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --success-start: #4facfe;
+    --success-end: #00f2fe;
+    --danger-start: #ff6b6b;
+    --danger-end: #ee5a24;
+    --info-start: #667eea;
+    --info-end: #764ba2;
+    --info-accent: #00f2fe;
+    --bg: #f8f9fa;
+    --text: #333;
+    --card-bg: #ffffff;
+    --muted: #6c757d;
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-lg: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --text: #e5e7eb;
+    --card-bg: #111827;
+    --muted: #94a3b8;
+  }
+  body { background-color: var(--bg); color: var(--text); }
+  .footer { background-color: var(--card-bg); }
+  .card, .form-page, .filter-panel { background-color: var(--card-bg); }
+  .form-control, .form-select { background-color: #0b0f14; color: var(--text); border-color: #243244; }
+  .navbar { box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+}
+body {
+    font-family: "Microsoft YaHei", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* 导航栏样式 */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: saturate(180%) blur(8px);
+    -webkit-backdrop-filter: saturate(180%) blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #fff !important;
+    transform: scale(1.05);
+}
+
+.navbar-nav .nav-item {
+    margin: 0 5px;
+}
+
+/* 首页横幅样式 */
+.jumbotron {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 0.5rem;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.jumbotron::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    transform: rotate(30deg);
+}
+
+.jumbotron h1 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.jumbotron .lead {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.jumbotron .btn {
+    margin: 0 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.jumbotron .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+/* 卡片样式 */
+.card {
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    background-color: var(--card-bg);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    border-top-left-radius: 0.75rem !important;
+    border-top-right-radius: 0.75rem !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* 页脚样式 */
+.footer {
+    background-color: var(--card-bg);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 表单样式 */
+.form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.2s ease;
+    background-color: #fff;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background-color: #fff;
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+}
+
+/* 按钮样式 */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-start) 0%, var(--success-end) 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-outline-success {
+    border: 2px solid var(--success-start);
+    color: var(--success-start);
+    background: transparent;
+}
+
+.btn-outline-success:hover {
+    background: var(--success-start);
+    color: white;
+}
+
+.btn-outline-info {
+    border: 2px solid var(--info-accent);
+    color: var(--info-accent);
+    background: transparent;
+}
+
+.btn-outline-info:hover {
+    background: var(--info-accent);
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 徽章样式 */
+.badge {
+    padding: 0.5em 0.75em;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.badge-lost {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.badge-found {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* 页面标题样式 */
+.page-title {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--primary);
+    position: relative;
+}
+
+.page-title::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 3px;
+}
+
+/* 卡片网格布局 */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* 信息卡片样式 */
+.info-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+.info-card-header {
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+
+.info-card-body {
+    padding: 1.5rem;
+}
+
+.info-card-footer {
+    padding: 1.25rem 1.5rem;
+    background-color: var(--bg);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 筛选面板样式 */
+.filter-panel {
+    background: var(--card-bg);
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    position: sticky;
+    top: 1rem;
+}
+
+.filter-panel h5 {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #333;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.filter-panel h5::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 3px;
+}
+
+/* 表单页面样式 */
+.form-page {
+    background: var(--card-bg);
+    border-radius: 0.75rem;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+.form-page .form-label {
+    margin-bottom: 0.5rem;
+}
+
+.form-page .form-control, 
+.form-page .form-select {
+    margin-bottom: 1.25rem;
+}
+
+/* 加载动画 */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 提示信息样式 */
+.alert {
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, var(--success-start) 0%, var(--success-end) 100%);
+    color: white;
+}
+
+.alert-error {
+    background: linear-gradient(135deg, var(--danger-start) 0%, var(--danger-end) 100%);
+    color: white;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #ffd86f 0%, #fc6262 100%);
+    color: white;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, var(--info-start) 0%, var(--info-end) 100%);
+    color: white;
+}
+
+.alert-link {
+    color: white;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.alert-link:hover {
+    color: rgba(255,255,255,0.8);
+}
+
+/* 动画效果 */
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes fadeIn {
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* 按钮组样式 */
+.btn-group-spacing {
+    gap: 0.75rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .jumbotron {
+        padding: 2rem 1rem;
+    }
+    
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .navbar-nav {
+        text-align: center;
+        padding: 1rem 0;
+    }
+    
+    .navbar-nav .nav-item {
+        margin: 0.25rem 0;
+    }
+    
+    .form-page {
+        padding: 1.5rem;
+    }
+    
+    .filter-panel {
+        position: static;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 特殊效果 */
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 输入框焦点效果 */
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background-color: #fff;
+    transform: scale(1.01);
+}
+
+/* 卡片悬停效果 */
+.card-hover {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+}
+
+/* 选择框样式 */
+.form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+}
+
+/* 文本区域样式 */
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* 表单验证样式 */
+.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* 复选框样式 */
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* 时间选择器样式 */
+input[type="datetime-local"].form-control {
+    padding: 0.75rem 1rem;
+}
+
+/* 链接样式 */
+a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/* 小屏幕下的按钮 */
+@media (max-width: 576px) {
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .jumbotron .btn {
+        margin: 5px 0;
+        display: block;
+        width: 100%;
+    }
+    
+    .btn-group-spacing {
+        flex-direction: column;
+    }
+    
+    .btn-group-spacing > * {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-group-spacing > *:last-child {
+        margin-bottom: 0;
+    }
+}

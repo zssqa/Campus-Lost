@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>失物招领信息 - 校园失物招领平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">校园失物招领平台</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/posts">失物招领信息</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">登录</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">注册</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title mb-0">失物招领信息</h2>
+            <a href="/post/create" class="btn btn-primary">发布信息</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="filter-panel">
+                    <h5 class="mb-4">筛选条件</h5>
+                    <div class="mb-3">
+                        <label class="form-label">信息类型</label>
+                        <select class="form-select" id="typeFilter">
+                            <option value="">全部</option>
+                            <option value="LOST">丢失</option>
+                            <option value="FOUND">拾到</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">分类</label>
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">全部</option>
+                            <option value="1">证件</option>
+                            <option value="2">电子产品</option>
+                            <option value="3">钥匙</option>
+                            <option value="4">书籍</option>
+                            <option value="5">衣物</option>
+                            <option value="6">其他</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary w-100" onclick="filterPosts()">
+                        <span id="filterText">筛选</span>
+                        <span id="filterLoading" class="loading d-none"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="postsContainer">
+                    <!-- 失物招领信息将通过JavaScript动态加载 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal fade" id="postDetailModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">信息详情</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="postDetailContent" class="py-2"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2025 校园失物招领平台</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 导航栏登录态切换
+        function updateNavbar() {
+            const userJson = sessionStorage.getItem('currentUser');
+            const navRight = document.querySelector('.navbar .navbar-nav:last-child');
+            if (!navRight) return;
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                navRight.innerHTML = '';
+                const li = document.createElement('li');
+                li.className = 'nav-item dropdown';
+                li.innerHTML = '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">' + (user.nickname || user.account || '已登录') + '</a>' +
+                               '<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">' +
+                               '<li><a class="dropdown-item" href="/post/create">发布信息</a></li>' +
+                               '<li><hr class="dropdown-divider"></li>' +
+                               '<li><a class="dropdown-item" href="#" id="logoutLink">退出登录</a></li>' +
+                               '</ul>';
+                navRight.appendChild(li);
+                setTimeout(function(){ var el = document.getElementById('logoutLink'); if (el) el.addEventListener('click', function(e){ e.preventDefault(); sessionStorage.removeItem('currentUser'); window.location.href = '/'; }); }, 0);
+            }
+        }
+        // 页面加载时获取失物招领信息
+        window.onload = function() {
+            loadPosts();
+        };
+
+        // 加载失物招领信息
+        function loadPosts() {
+            // 显示加载状态
+            document.getElementById('postsContainer').innerHTML = `
+                <div class="text-center py-5">
+                    <div class="loading mx-auto"></div>
+                    <p class="mt-3">正在加载信息...</p>
+                </div>
+            `;
+            
+            fetch('/api/public/posts')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.code === 200) {
+                        displayPosts(result.data);
+                    } else {
+                        document.getElementById('postsContainer').innerHTML = `
+                            <div class="alert alert-warning text-center">
+                                加载失败: ${result.message}
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('postsContainer').innerHTML = `
+                        <div class="alert alert-danger text-center">
+                            加载过程中发生错误
+                        </div>
+                    `;
+                });
+        }
+
+        // 显示失物招领信息
+        function displayPosts(posts) {
+            const container = document.getElementById('postsContainer');
+            if (!posts || posts.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info text-center">
+                        <h4>暂无失物招领信息</h4>
+                        <p>您可以<a href="/post/create" class="alert-link">发布第一条信息</a></p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="card-grid">';
+            posts.forEach(post => {
+                // 格式化时间
+                const date = new Date(post.createTime);
+                const formattedDate = date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN');
+                
+                html += `
+                    <div class="info-card fade-in">
+                        <div class="info-card-header">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="mb-1">${post.title}</h5>
+                                <span class="badge ${post.type === 'LOST' ? 'badge-lost' : 'badge-found'}">
+                                    ${post.type === 'LOST' ? '丢失' : '拾到'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-card-body">
+                            <p class="mb-2">${post.content}</p>
+                            <div class="d-flex justify-content-between text-muted small">
+                                <span>分类: ${getCategoryName(post.categoryId)}</span>
+                                <span>时间: ${formattedDate}</span>
+                            </div>
+                        </div>
+                        <div class="info-card-footer">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">ID: ${post.id}</small>
+                                <button type="button" class="btn btn-outline-primary btn-sm view-detail" data-id="${post.id}">查看详情</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            container.innerHTML = html;
+            // 绑定详情按钮事件
+            attachDetailHandlers();
+            
+            // 添加动画效果
+            const cards = container.querySelectorAll('.fade-in');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        }
+
+        // 详情弹窗逻辑
+        function attachDetailHandlers() {
+            const buttons = document.querySelectorAll('.view-detail');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-id');
+                    showPostDetail(id);
+                });
+            });
+        }
+
+        function showPostDetail(id) {
+            const content = document.getElementById('postDetailContent');
+            content.innerHTML = '<div class="text-center py-4"><div class="loading mx-auto"></div><p class="mt-3">正在加载详情...</p></div>';
+            const modal = new bootstrap.Modal(document.getElementById('postDetailModal'));
+            modal.show();
+            
+            fetch(`/api/public/posts/${id}`)
+                .then(r => r.json())
+                .then(result => {
+                    if (result.code === 200 && result.data) {
+                        const post = result.data;
+                        const date = new Date(post.createTime);
+                        const formattedDate = date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN');
+                        content.innerHTML = `
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="text-gradient mb-2">${post.title}</h5>
+                                    <span class="badge ${post.type === 'LOST' ? 'badge-lost' : 'badge-found'}">${post.type === 'LOST' ? '丢失' : '拾到'}</span>
+                                </div>
+                                <div class="text-muted small">分类: ${getCategoryName(post.categoryId)} | 时间: ${formattedDate} | ID: ${post.id}</div>
+                            </div>
+                            <p class="mb-0">${post.content}</p>
+                        `;
+                    } else {
+                        content.innerHTML = '<div class="alert alert-warning">加载详情失败：' + (result.message || '未知错误') + '</div>';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    content.innerHTML = '<div class="alert alert-error">加载过程中发生错误</div>';
+                });
+        }
+
+        // 获取分类名称
+        function getCategoryName(categoryId) {
+            const categories = {
+                '1': '证件',
+                '2': '电子产品',
+                '3': '钥匙',
+                '4': '书籍',
+                '5': '衣物',
+                '6': '其他'
+            };
+            return categories[categoryId] || '未知';
+        }
+
+        // 筛选失物招领信息
+        function filterPosts() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const filterText = document.getElementById('filterText');
+            const filterLoading = document.getElementById('filterLoading');
+            
+            // 显示加载状态
+            filterText.classList.add('d-none');
+            filterLoading.classList.remove('d-none');
+            
+            // 构造查询参数
+            let url = '/api/public/posts';
+            const params = [];
+            if (typeFilter) params.push(`type=${typeFilter}`);
+            if (categoryFilter) params.push(`categoryId=${categoryFilter}`);
+            
+            if (params.length > 0) {
+                url += '?' + params.join('&');
+            }
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.code === 200) {
+                        displayPosts(result.data);
+                    } else {
+                        alert('筛选失败: ' + result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('筛选过程中发生错误');
+                })
+                .finally(() => {
+                    // 恢复按钮状态
+                    filterText.classList.remove('d-none');
+                    filterLoading.classList.add('d-none');
+                });
+        }
+        
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbar();
+            // 筛选面板动画
+            const filterPanel = document.querySelector('.filter-panel');
+            filterPanel.style.opacity = '1';
+            filterPanel.style.transform = 'translateY(0)';
+        });
+    </script>
+</body>
+</html>
