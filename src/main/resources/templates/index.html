@@ -24,7 +24,10 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item">
+                    <li class="nav-item" id="adminLinkItem">
+                        <a class="nav-link" href="/admin/login">管理界面</a>
+                    </li>
+                    <li class="nav-item" id="loginLinkItem">
                         <a class="nav-link" href="/login">登录</a>
                     </li>
                     <li class="nav-item">
@@ -95,21 +98,37 @@
         // 导航栏登录态切换
         function updateNavbar() {
             const userJson = sessionStorage.getItem('currentUser');
+            const adminLinkItem = document.getElementById('adminLinkItem');
+            const loginLinkItem = document.getElementById('loginLinkItem');
             const navRight = document.querySelector('.navbar .navbar-nav:last-child');
             if (!navRight) return;
+            
             if (userJson) {
                 const user = JSON.parse(userJson);
+                // 用户已登录，隐藏登录、注册、管理界面静态链接
+                if (loginLinkItem) loginLinkItem.style.display = 'none';
+                if (adminLinkItem) adminLinkItem.style.display = 'none';
+                
                 navRight.innerHTML = '';
                 const li = document.createElement('li');
                 li.className = 'nav-item dropdown';
-                li.innerHTML = '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">' + (user.nickname || user.account || '已登录') + '</a>' +
-                               '<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">' +
-                               '<li><a class="dropdown-item" href="/post/create">发布信息</a></li>' +
-                               '<li><hr class="dropdown-divider"></li>' +
-                               '<li><a class="dropdown-item" href="#" id="logoutLink">退出登录</a></li>' +
-                               '</ul>';
+                let dropdownContent = '<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">' + (user.nickname || user.account || '已登录') + '</a>' +
+                                      '<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">' +
+                                      '<li><a class="dropdown-item" href="/post/create">发布信息</a></li>';
+                // 只有管理员才显示管理界面选项
+                if (user.role === 'ADMIN') {
+                    dropdownContent += '<li><a class="dropdown-item" href="/admin">管理界面</a></li>';
+                }
+                dropdownContent += '<li><hr class="dropdown-divider"></li>' +
+                                   '<li><a class="dropdown-item" href="#" id="logoutLink">退出登录</a></li>' +
+                                   '</ul>';
+                li.innerHTML = dropdownContent;
                 navRight.appendChild(li);
                 setTimeout(function(){ var el = document.getElementById('logoutLink'); if (el) el.addEventListener('click', function(e){ e.preventDefault(); sessionStorage.removeItem('currentUser'); window.location.href = '/'; }); }, 0);
+            } else {
+                // 未登录，显示静态链接
+                if (loginLinkItem) loginLinkItem.style.display = 'block';
+                if (adminLinkItem) adminLinkItem.style.display = 'block';
             }
         }
         // 添加页面加载动画
