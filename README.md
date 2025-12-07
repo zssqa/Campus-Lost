@@ -239,14 +239,6 @@ Web界面包含以下页面：
 
 > API接口采用JSON格式进行数据交换，请求和响应均使用UTF-8编码。
 
-### 界面预览
-
-![首页](src/main/resources/static/images/home.png)
-![信息列表](src/main/resources/static/images/posts.png)
-![发布信息](src/main/resources/static/images/create-post.png)
-![管理员界面](src/main/resources/static/images/admin.png)
-
-> 注意：以上截图仅为示意图，实际界面可能有所差异。
 
 ### 常见问题解决
 
