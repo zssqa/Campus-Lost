@@ -45,6 +45,8 @@ body {
     backdrop-filter: saturate(180%) blur(8px);
     -webkit-backdrop-filter: saturate(180%) blur(8px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+    z-index: 1000;
 }
 
 .navbar-brand {
@@ -65,6 +67,32 @@ body {
 
 .navbar-nav .nav-item {
     margin: 0 5px;
+}
+
+/* 下拉菜单样式 */
+.dropdown-menu {
+    z-index: 1050 !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: none;
+    border-radius: 0.5rem;
+    position: absolute !important;
+}
+
+.navbar-collapse {
+    overflow: visible !important;
+}
+
+.navbar-nav {
+    overflow: visible !important;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #667eea;
+    color: white;
+}
+
+.dropdown-menu .dropdown-divider {
+    margin: 0.5rem 0;
 }
 
 /* 首页横幅样式 */

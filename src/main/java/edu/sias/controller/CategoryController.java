@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 分类控制器
+ * 处理分类相关的HTTP请求
+ */
 @RestController
 @RequestMapping("/api/public")
 public class CategoryController {
@@ -17,6 +21,10 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
     
+    /**
+     * 获取所有分类接口
+     * @return 分类列表
+     */
     @GetMapping("/categories")
     public ResponseResult<List<Category>> getAllCategories() {
         try {

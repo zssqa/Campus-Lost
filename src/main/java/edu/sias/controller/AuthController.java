@@ -8,6 +8,10 @@ import edu.sias.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 认证控制器
+ * 处理用户注册和登录相关的HTTP请求
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -15,6 +19,11 @@ public class AuthController {
     @Autowired
     private UserService userService;
     
+    /**
+     * 用户注册接口
+     * @param userRegisterDTO 用户注册信息
+     * @return 注册结果
+     */
     @PostMapping("/register")
     public ResponseResult<User> register(@RequestBody UserRegisterDTO userRegisterDTO) {
         try {
@@ -25,6 +34,11 @@ public class AuthController {
         }
     }
     
+    /**
+     * 用户登录接口
+     * @param userLoginDTO 用户登录信息
+     * @return 登录结果
+     */
     @PostMapping("/login")
     public ResponseResult<User> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {

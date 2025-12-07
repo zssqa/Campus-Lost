@@ -208,9 +208,11 @@
             .then(response => response.json())
             .then(result => {
                 if (result.code === 200) {
-                    alert('信息发布成功！');
-                    // 跳转到信息列表页面
-                    window.location.href = '/posts';
+                    alert('信息发布成功！\n等待管理员审核后将显示在列表中');
+                    // 延迟后跳转到信息列表页面，让数据有时间保存到数据库
+                    setTimeout(() => {
+                        window.location.href = '/posts';
+                    }, 500);
                 } else {
                     alert('发布失败：' + result.message);
                 }

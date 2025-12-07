@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 校园失物招领平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .admin-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: white;
+        }
+        .admin-sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            display: block;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .admin-sidebar a:hover,
+        .admin-sidebar a.active {
+            background-color: rgba(255,255,255,0.1);
+            border-left-color: white;
+        }
+        .admin-main {
+            padding: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <div class="col-md-3 admin-sidebar">
+                <h4 class="px-3 mb-4">管理后台</h4>
+                <a href="/admin" class="active">📊 仪表盘</a>
+                <a href="/admin/posts">📝 信息管理</a>
+                <a href="/admin/users">👥 用户管理</a>
+                <a href="/" class="mt-4">← 返回主站</a>
+                <a href="#" id="logoutBtn" class="mt-2" onclick="logout(event)">🚶 退出登录</a>
+            </div>
+            
+            <!-- 主内容区 -->
+            <div class="col-md-9 admin-main">
+                <h2 class="mb-4">仪表盘</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-label">待审核信息</div>
+                            <div class="stat-number" id="pendingCount">0</div>
+                            <a href="/admin/posts" class="btn btn-sm btn-primary mt-2">查看</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-label">已发布信息</div>
+                            <div class="stat-number" id="publishedCount">0</div>
+                            <a href="/admin/posts" class="btn btn-sm btn-primary mt-2">查看</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-label">总用户数</div>
+                            <div class="stat-number" id="userCount">0</div>
+                            <a href="/admin/users" class="btn btn-sm btn-primary mt-2">查看</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-label">禁用账户</div>
+                            <div class="stat-number" id="bannedCount">0</div>
+                            <a href="/admin/users" class="btn btn-sm btn-primary mt-2">查看</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 加载统计数据
+        function loadStats() {
+            // 获取待审核信息
+            fetch('/api/admin/posts/pending?t=' + new Date().getTime(), { cache: 'no-store' })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.code === 200) {
+                        document.getElementById('pendingCount').textContent = (result.data || []).length;
+                    } else {
+                        console.error('Error loading pending posts:', result.message);
+                        document.getElementById('pendingCount').textContent = '0';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('pendingCount').textContent = '0';
+                });
+            
+            // 获取所有信息
+            fetch('/api/admin/posts?t=' + new Date().getTime(), { cache: 'no-store' })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.code === 200) {
+                        const posts = result.data || [];
+                        const published = posts.filter(p => p.status === 'PUBLISHED').length;
+                        document.getElementById('publishedCount').textContent = published;
+                    } else {
+                        console.error('Error loading posts:', result.message);
+                        document.getElementById('publishedCount').textContent = '0';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('publishedCount').textContent = '0';
+                });
+            
+            // 获取用户统计
+            fetch('/api/admin/users?t=' + new Date().getTime(), { cache: 'no-store' })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.code === 200) {
+                        const users = result.data || [];
+                        document.getElementById('userCount').textContent = users.length;
+                        const banned = users.filter(u => u.status === 'BANNED').length;
+                        document.getElementById('bannedCount').textContent = banned;
+                    } else {
+                        console.error('Error loading users:', result.message);
+                        document.getElementById('userCount').textContent = '0';
+                        document.getElementById('bannedCount').textContent = '0';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('userCount').textContent = '0';
+                    document.getElementById('bannedCount').textContent = '0';
+                });
+        }
+        
+        (function init(){
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    checkLogin();
+                    loadStats();
+                });
+            } else {
+                checkLogin();
+                loadStats();
+            }
+        })();
+        
+        // 检查管理员登录状态
+        function checkLogin() {
+            const adminUser = sessionStorage.getItem('adminUser');
+            if (!adminUser) {
+                window.location.href = '/admin/login';
+            }
+        }
+        
+        // 退出登录
+        function logout(event) {
+            event.preventDefault();
+            if (confirm('确认要退出登录吗？')) {
+                sessionStorage.removeItem('adminUser');
+                window.location.href = '/admin/login';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 信息控制器
+ * 处理失物/拾到信息相关的HTTP请求
+ */
 @RestController
 @RequestMapping("/api")
 public class PostController {
@@ -16,7 +20,11 @@ public class PostController {
     @Autowired
     private PostService postService;
     
-    // 用户发布信息
+    /**
+     * 用户发布信息接口
+     * @param postCreateDTO 信息发布数据
+     * @return 发布结果
+     */
     @PostMapping("/user/posts")
     public ResponseResult<Post> createPost(@RequestBody PostCreateDTO postCreateDTO) {
         try {
@@ -29,7 +37,10 @@ public class PostController {
         }
     }
     
-    // 获取公开信息列表
+    /**
+     * 获取公开信息列表接口
+     * @return 信息列表
+     */
     @GetMapping("/public/posts")
     public ResponseResult<List<Post>> getPublishedPosts() {
         try {
@@ -40,7 +51,11 @@ public class PostController {
         }
     }
     
-    // 获取信息详情
+    /**
+     * 获取信息详情接口
+     * @param id 信息ID
+     * @return 信息详情
+     */
     @GetMapping("/public/posts/{id}")
     public ResponseResult<Post> getPostById(@PathVariable Long id) {
         try {

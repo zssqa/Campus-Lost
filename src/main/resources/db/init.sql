@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `lost_found_post` (
   `audit_reason` varchar(200) DEFAULT NULL,
   `create_time` bigint NOT NULL,
   `update_time` bigint NOT NULL,
+  `anonymous` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_category_id` (`category_id`),
@@ -125,13 +126,13 @@ INSERT INTO user (id, account, password, nickname, role, status, create_time) VA
 (6, 'user5', 'user111', '钱七', 'USER', 'BANNED', UNIX_TIMESTAMP()*1000);
 
 -- 插入测试失物/拾到信息
-INSERT INTO lost_found_post (id, type, title, category_id, tags, content, happen_time, location_text, lat, lng, status, user_id, audit_reason, create_time, update_time) VALUES
-(1, 'LOST', '丢失黑色钱包', 1, '钱包,证件', '在图书馆自习室丢失一个黑色钱包，内有身份证和银行卡', UNIX_TIMESTAMP()*1000-86400000, '图书馆一楼自习室', 34.7687, 113.6512, 'PUBLISHED', 2, NULL, UNIX_TIMESTAMP()*1000-86400000, UNIX_TIMESTAMP()*1000-86400000),
-(2, 'FOUND', '拾到银色手机', 2, '手机,iPhone', '在食堂二楼拾到一部银色iPhone，请失主联系', UNIX_TIMESTAMP()*1000-172800000, '第一食堂二楼', 34.7691, 113.6521, 'PUBLISHED', 3, NULL, UNIX_TIMESTAMP()*1000-172800000, UNIX_TIMESTAMP()*1000-172800000),
-(3, 'LOST', '丢失宿舍钥匙', 3, '钥匙', '丢失一把宿舍钥匙，上面挂着一个小熊挂件', UNIX_TIMESTAMP()*1000-259200000, '宿舍楼A栋', 34.7702, 113.6508, 'PUBLISHED', 4, NULL, UNIX_TIMESTAMP()*1000-259200000, UNIX_TIMESTAMP()*1000-259200000),
-(4, 'FOUND', '拾到Java教材', 4, '书籍,教材', '在教学楼B座拾到一本《Java核心技术》', UNIX_TIMESTAMP()*1000-345600000, '教学楼B座201教室', 34.7675, 113.6533, 'PUBLISHED', 5, NULL, UNIX_TIMESTAMP()*1000-345600000, UNIX_TIMESTAMP()*1000-345600000),
-(5, 'LOST', '丢失蓝色外套', 5, '外套,衣服', '在体育馆丢失一件蓝色羽绒服', UNIX_TIMESTAMP()*1000-432000000, '体育馆', 34.7668, 113.6495, 'PUBLISHED', 2, NULL, UNIX_TIMESTAMP()*1000-432000000, UNIX_TIMESTAMP()*1000-432000000),
-(6, 'FOUND', '拾到U盘', 6, 'U盘,存储设备', '在实验室拾到一个红色U盘', UNIX_TIMESTAMP()*1000-518400000, '计算机学院实验室', 34.7698, 113.6518, 'PENDING', 3, NULL, UNIX_TIMESTAMP()*1000-518400000, UNIX_TIMESTAMP()*1000-518400000);
+INSERT INTO lost_found_post (id, type, title, category_id, tags, content, happen_time, location_text, lat, lng, status, user_id, audit_reason, create_time, update_time, anonymous) VALUES
+(1, 'LOST', '丢失黑色钱包', 1, '钱包,证件', '在图书馆自习室丢失一个黑色钱包，内有身份证和银行卡', UNIX_TIMESTAMP()*1000-86400000, '图书馆一楼自习室', 34.7687, 113.6512, 'PUBLISHED', 2, NULL, UNIX_TIMESTAMP()*1000-86400000, UNIX_TIMESTAMP()*1000-86400000, 0),
+(2, 'FOUND', '拾到银色手机', 2, '手机,iPhone', '在食堂二楼拾到一部银色iPhone，请失主联系', UNIX_TIMESTAMP()*1000-172800000, '第一食堂二楼', 34.7691, 113.6521, 'PUBLISHED', 3, NULL, UNIX_TIMESTAMP()*1000-172800000, UNIX_TIMESTAMP()*1000-172800000, 0),
+(3, 'LOST', '丢失宿舍钥匙', 3, '钥匙', '丢失一把宿舍钥匙，上面挂着一个小熊挂件', UNIX_TIMESTAMP()*1000-259200000, '宿舍楼A栋', 34.7702, 113.6508, 'PUBLISHED', 4, NULL, UNIX_TIMESTAMP()*1000-259200000, UNIX_TIMESTAMP()*1000-259200000, 0),
+(4, 'FOUND', '拾到Java教材', 4, '书籍,教材', '在教学楼B座拾到一本《Java核心技术》', UNIX_TIMESTAMP()*1000-345600000, '教学楼B座201教室', 34.7675, 113.6533, 'PUBLISHED', 5, NULL, UNIX_TIMESTAMP()*1000-345600000, UNIX_TIMESTAMP()*1000-345600000, 0),
+(5, 'LOST', '丢失蓝色外套', 5, '外套,衣服', '在体育馆丢失一件蓝色羽绒服', UNIX_TIMESTAMP()*1000-432000000, '体育馆', 34.7668, 113.6495, 'PUBLISHED', 2, NULL, UNIX_TIMESTAMP()*1000-432000000, UNIX_TIMESTAMP()*1000-432000000, 0),
+(6, 'FOUND', '拾到U盘', 6, 'U盘,存储设备', '在实验室拾到一个红色U盘', UNIX_TIMESTAMP()*1000-518400000, '计算机学院实验室', 34.7698, 113.6518, 'PENDING', 3, NULL, UNIX_TIMESTAMP()*1000-518400000, UNIX_TIMESTAMP()*1000-518400000, 0);
 
 -- 插入测试图片
 INSERT INTO post_image (id, post_id, url, sort, create_time) VALUES
